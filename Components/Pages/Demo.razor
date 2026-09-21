@@ -1,0 +1,104 @@
+﻿@page "/demo"
+@using TechVault.UI.Models
+
+<PageTitle>TechVault - Add User Demo</PageTitle>
+
+<div style="max-width: 600px; margin: 2rem auto; font-family: sans-serif; background: #f8f9fa; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <a href="/" style="text-decoration: none; color: #007bff; font-weight: bold;">&larr; Back to Dashboard</a>
+
+    <h2 style="margin-top: 1rem;">Teacher Demo: User Registration</h2>
+    <p style="color: #6c757d;">Demonstrating data binding, input constraints, and C# validation.</p>
+
+    <div style="margin-bottom: 1rem;">
+        <label style="display:block; font-weight: bold; margin-bottom: 0.5rem;">Username:</label>
+        <!-- Standard text input binding -->
+        <input type="text" @bind="newUser.Username" placeholder="e.g., jsmith99" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px;" />
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+        <label style="display:block; font-weight: bold; margin-bottom: 0.5rem;">Email Address:</label>
+        <!-- Constraint: HTML5 email type triggers appropriate mobile keyboards and basic browser validation -->
+        <input type="email" @bind="newUser.Email" placeholder="student@college.ac.uk" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px;" />
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+        <label style="display:block; font-weight: bold; margin-bottom: 0.5rem;">Role:</label>
+        <!-- Constraint: Drop-down prevents invalid role entries -->
+        <select @bind="newUser.Role" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px;">
+            <option value="">-- Select System Role --</option>
+            <option value="Student">Student</option>
+            <option value="Staff">Staff</option>
+            <option value="Admin">Administrator</option>
+        </select>
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display:block; font-weight: bold; margin-bottom: 0.5rem;">Date of Birth:</label>
+        <!-- Constraint: Setting max date prevents future birth dates -->
+        <input type="date" max="@DateTime.Now.ToString("yyyy-MM-dd")" @bind="newUser.DateOfBirth" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px;" />
+    </div>
+
+    <button @onclick="ProcessUserRegistration" style="width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 1.1rem; cursor: pointer; font-weight: bold;">
+        Register User
+    </button>
+
+    <!-- Visual Feedback Section -->
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div style="margin-top: 1rem; padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;">
+            <strong>Validation Error:</strong> @errorMessage
+        </div>
+    }
+
+    @if (showSuccess)
+    {
+        <div style="margin-top: 1rem; padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px;">
+            <strong>Success!</strong> User account for @newUser.Username (@newUser.Role) created successfully.
+        </div>
+    }
+</div>
+
+@code {
+    private UserProfile newUser = new UserProfile();
+    private bool showSuccess = false;
+    private string errorMessage = string.Empty;
+
+    private void ProcessUserRegistration()
+    {
+        // 1. Reset feedback states
+        showSuccess = false;
+        errorMessage = string.Empty;
+
+        // 2. C# Logic Validation
+        if (string.IsNullOrWhiteSpace(newUser.Username))
+        {
+            errorMessage = "Username cannot be blank.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(newUser.Email) || !newUser.Email.Contains("@"))
+        {
+            errorMessage = "Please enter a valid email address containing an '@' symbol.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(newUser.Role))
+        {
+            errorMessage = "A system role must be selected.";
+            return;
+        }
+
+        // Age validation: Check if they are at least 16 years old
+        var age = DateTime.Now.Year - newUser.DateOfBirth.Year;
+        if (newUser.DateOfBirth.Date > DateTime.Now.AddYears(-age)) age--;
+
+        if (age < 16)
+        {
+            errorMessage = "Users must be at least 16 years old to register.";
+            return;
+        }
+
+        // 3. If all validation passes, trigger success UI
+        showSuccess = true;
+    }
+}

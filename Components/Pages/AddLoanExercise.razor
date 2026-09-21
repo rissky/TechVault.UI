@@ -1,0 +1,52 @@
+﻿@page "/exerciseaddloan"
+@using TechVault.UI.Models
+
+<PageTitle>TechVault - New Loan</PageTitle>
+
+<div style="max-width: 600px; margin: 2rem auto; font-family: sans-serif;">
+    <a href="/" style="text-decoration: none; color: #007bff; font-weight: bold; display: block; margin-bottom: 1rem;">&larr; Back to Dashboard</a>
+    <h2>Issue New Equipment</h2>
+    <p>Use the form below to log a new equipment loan.</p>
+
+    <!-- STUDENT TODO: Apply UI/UX principles. Is a free-text input the best way to ask for a Student ID? -->
+    <div style="margin-bottom: 1rem;">
+        <label style="display:block; font-weight: bold;">Student ID:</label>
+        <input type="text" @bind="newLoan.StudentId" style="width: 100%; padding: 8px;" />
+    </div>
+
+    <!-- STUDENT TODO: Change this to a dropdown (<select>) to constrain user input -->
+    <div style="margin-bottom: 1rem;">
+        <label style="display:block; font-weight: bold;">Equipment Type:</label>
+        <input type="text" @bind="newLoan.EquipmentType" style="width: 100%; padding: 8px;" />
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+        <label style="display:block; font-weight: bold;">Return Date:</label>
+        <input type="date" @bind="newLoan.ExpectedReturn" style="width: 100%; padding: 8px;" />
+    </div>
+
+    <button @onclick="SubmitLoan" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">
+        Submit Loan
+    </button>
+
+    <!-- STUDENT TODO: Add visual feedback for validation errors (e.g., missing data) -->
+    @if (showSuccess)
+    {
+        <div style="margin-top: 1rem; padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;">
+            Loan for @newLoan.EquipmentType recorded successfully!
+        </div>
+    }
+</div>
+
+@code {
+    private LoanRecord newLoan = new LoanRecord();
+    private bool showSuccess = false;
+
+    private void SubmitLoan()
+    {
+        // STUDENT TODO: Write validation logic here before setting showSuccess to true.
+        // E.g., What happens if StudentId is 0? What if EquipmentType is empty?
+
+        showSuccess = true;
+    }
+}
