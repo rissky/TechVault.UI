@@ -2,7 +2,7 @@
 @using TechVault.UI.Models
 
 <PageTitle>TechVault - New Loan</PageTitle>
-
+<!--https://learn.microsoft.com/en-us/aspnet/core/blazor/components/?view=aspnetcore-9.0 is a great resource for learning Blazor -->
 <div style="max-width: 600px; margin: 2rem auto; font-family: sans-serif;">
     <a href="/" style="text-decoration: none; color: #007bff; font-weight: bold; display: block; margin-bottom: 1rem;">&larr; Back to Dashboard</a>
     <h2>Issue New Equipment</h2>
@@ -19,7 +19,7 @@
         <label style="display:block; font-weight: bold;">Equipment Type:</label>
         <input type="text" @bind="newLoan.EquipmentType" style="width: 100%; padding: 8px;" />
     </div>
-
+    <!-- STUDENT TODO: is this the best input choice here -->
     <div style="margin-bottom: 1rem;">
         <label style="display:block; font-weight: bold;">Return Date:</label>
         <input type="date" @bind="newLoan.ExpectedReturn" style="width: 100%; padding: 8px;" />
