@@ -1,7 +1,34 @@
 ﻿@inherits LayoutComponentBase
 
-<main>
-    <article>
+<style>
+    /* CSS Flexbox to force a side-by-side layout */
+    .page-wrapper {
+        display: flex;
+        min-height: 100vh; /* Full viewport height */
+        background-color: #f8f9fa; /* Light gray background for the main content area */
+    }
+
+    .sidebar-nav {
+        width: 250px;
+        background-color: #343a40; /* Dark sidebar background */
+        color: white;
+        flex-shrink: 0; /* Prevents the sidebar from collapsing */
+        box-shadow: 2px 0 8px rgba(0,0,0,0.15); /* Slight shadow to separate from content */
+    }
+
+    .main-content {
+        flex-grow: 1; /* Takes up the rest of the available space */
+        padding: 2rem;
+        overflow-y: auto; /* Allows scrolling if content is long */
+    }
+</style>
+
+<div class="page-wrapper">
+    <div class="sidebar-nav">
+        <NavMenu />
+    </div>
+
+    <main class="main-content">
         @Body
-    </article>
-</main>
+    </main>
+</div>

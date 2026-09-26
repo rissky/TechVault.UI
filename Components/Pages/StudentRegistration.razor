@@ -1,0 +1,96 @@
+﻿@page "/register-student"
+@using TechVault.UI.Models
+@using TechVault.UI.Data
+@inject DatabaseManager DbManager
+@inject MockDataManager MockManager
+
+<PageTitle>Register Student</PageTitle>
+
+<div style="max-width: 600px; margin: 2rem auto; font-family: sans-serif; background: #f8f9fa; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <a href="/" style="text-decoration: none; color: #007bff; font-weight: bold;">&larr; Back to Dashboard</a>
+
+    <h2 style="margin-top: 1rem; color: #343a40;">Register New Student</h2>
+    <p style="color: #6c757d; margin-bottom: 2rem;">Add a new student to the database. Emails must use the college domain.</p>
+
+    <EditForm Model="@newStudent" OnValidSubmit="HandleValidSubmit">
+
+        @if (showSuccessMessage)
+        {
+            <div class="alert alert-success" style="border-radius: 4px;"><strong>Success!</strong> Student registered successfully!</div>
+        }
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger" style="border-radius: 4px;"><strong>Error:</strong> @errorMessage</div>
+        }
+
+        <div style="margin-bottom: 1.25rem;">
+            <label for="firstName" style="display:block; font-weight: bold; margin-bottom: 0.5rem; color: #495057;">First Name</label>
+            <InputText id="firstName" class="form-control" @bind-Value="newStudent.FirstName" placeholder="e.g. Jane" style="padding: 10px; border-radius: 4px;" />
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+            <label for="lastName" style="display:block; font-weight: bold; margin-bottom: 0.5rem; color: #495057;">Last Name</label>
+            <InputText id="lastName" class="form-control" @bind-Value="newStudent.LastName" placeholder="e.g. Doe" style="padding: 10px; border-radius: 4px;" />
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="email" style="display:block; font-weight: bold; margin-bottom: 0.5rem; color: #495057;">College Email</label>
+            <InputText id="email" type="email" class="form-control" @bind-Value="newStudent.CollegeEmail" placeholder="student@college.ac.uk" style="padding: 10px; border-radius: 4px;" />
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: background-color 0.2s;">
+            Register Student
+        </button>
+    </EditForm>
+    
+</div>
+
+@code {
+    private Student newStudent = new Student();
+    private bool showSuccessMessage = false;
+    private string errorMessage = "";
+    private bool isUsingMockData = false;
+
+    protected override void OnInitialized()
+    {
+        isUsingMockData = SettingsManager.UseMockData("RegisterStudent");
+    }
+
+    private void HandleValidSubmit()
+    {
+        showSuccessMessage = false;
+        errorMessage = "";
+
+        // Basic Defensive Programming / Validation
+        if (string.IsNullOrWhiteSpace(newStudent.FirstName) || string.IsNullOrWhiteSpace(newStudent.LastName) || string.IsNullOrWhiteSpace(newStudent.CollegeEmail))
+        {
+            errorMessage = "All fields are required.";
+            return;
+        }
+
+        if (!newStudent.CollegeEmail.EndsWith("@college.ac.uk"))
+        {
+            errorMessage = "Email must end with @college.ac.uk";
+            return;
+        }
+
+        try
+        {
+            if (isUsingMockData)
+            {
+                MockManager.SaveStudent(newStudent);
+            }
+            else
+            {
+                DbManager.SaveStudent(newStudent);
+            }
+
+            showSuccessMessage = true;
+            newStudent = new Student(); // Reset form
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error saving to database: {ex.Message}";
+        }
+    }
+}

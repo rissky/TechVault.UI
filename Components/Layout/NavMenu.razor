@@ -1,0 +1,75 @@
+﻿<style>
+    .custom-brand-header {
+        padding: 1.5rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .custom-brand {
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: #ffffff;
+        text-decoration: none;
+        letter-spacing: 1px;
+    }
+
+    .custom-nav-list {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+    }
+
+    .custom-nav-link {
+        color: #adb5bd; /* Muted grey text */
+        padding: 0.8rem 1.5rem;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 1.1rem;
+        transition: all 0.2s ease-in-out;
+        display: block;
+    }
+
+        /* Hover effect: text turns white, background gets slightly lighter, slight indent */
+        .custom-nav-link:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.05);
+            padding-left: 1.8rem;
+        }
+
+        /* Active page indicator */
+        .custom-nav-link.active {
+            color: #ffffff;
+            background-color: #007bff; /* Bright blue highlight */
+            border-left: 4px solid #0056b3;
+        }
+</style>
+
+<div class="custom-brand-header">
+    <a class="custom-brand" href="">
+        🛡️ TechVault
+    </a>
+</div>
+
+<nav class="custom-nav-list">
+    <NavLink class="custom-nav-link" href="" Match="NavLinkMatch.All">
+        Home
+    </NavLink>
+    <NavLink class="custom-nav-link" href="register-student">
+        Add Student
+    </NavLink>
+    <NavLink class="custom-nav-link" href="exercise">
+        Create Loan
+    </NavLink>
+    <NavLink class="custom-nav-link" href="view-data">
+        View Data
+    </NavLink>
+
+    <!-- Separator line before demo -->
+    <hr style="border-color: rgba(255,255,255,0.1); margin: 1rem;" />
+
+    <NavLink class="custom-nav-link" href="demo" style="color: #ffc107;">
+        Demo
+    </NavLink>
+</nav>

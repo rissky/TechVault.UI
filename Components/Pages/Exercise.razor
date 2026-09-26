@@ -1,0 +1,135 @@
+﻿@page "/exercise"
+@using TechVault.UI.Models
+@using TechVault.UI.Data
+@inject DatabaseManager DbManager
+@inject MockDataManager MockManager
+
+<PageTitle>Create Loan</PageTitle>
+
+<div style="max-width: 600px; margin: 2rem auto; font-family: sans-serif; background: #f8f9fa; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <a href="/" style="text-decoration: none; color: #007bff; font-weight: bold;">&larr; Back to Dashboard</a>
+
+    <h2 style="margin-top: 1rem; color: #343a40;">Create Equipment Loan</h2>
+    <p style="color: #6c757d; margin-bottom: 2rem;">Select a student and link them to available equipment.</p>
+
+    <EditForm Model="@newLoan" OnValidSubmit="HandleValidSubmit">
+
+        @if (showSuccessMessage)
+        {
+            <div class="alert alert-success" style="border-radius: 4px;"><strong>Success!</strong> Loan created successfully!</div>
+        }
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger" style="border-radius: 4px;"><strong>Error:</strong> @errorMessage</div>
+        }
+
+        <div style="margin-bottom: 1.25rem;">
+            <label for="student" style="display:block; font-weight: bold; margin-bottom: 0.5rem; color: #495057;">Student</label>
+            <InputSelect id="student" class="form-select" @bind-Value="newLoan.StudentId" style="padding: 10px; border-radius: 4px;">
+                <option value="0">-- Select a Student --</option>
+                @foreach (var student in students)
+                {
+                    <option value="@student.StudentId">@student.FirstName @student.LastName (@student.CollegeEmail)</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+            <label for="equipment" style="display:block; font-weight: bold; margin-bottom: 0.5rem; color: #495057;">Equipment</label>
+            <InputSelect id="equipment" class="form-select" @bind-Value="newLoan.EquipmentId" style="padding: 10px; border-radius: 4px;">
+                <option value="0">-- Select Equipment --</option>
+                @foreach (var item in availableEquipment)
+                {
+                    <option value="@item.EquipmentId">@item.Type - @item.Model (Condition: @item.Condition)</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="returnDate" style="display:block; font-weight: bold; margin-bottom: 0.5rem; color: #495057;">Expected Return Date</label>
+            <InputDate id="returnDate" class="form-control" @bind-Value="newLoan.ExpectedReturn" style="padding: 10px; border-radius: 4px;" />
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: background-color 0.2s;">
+            Create Loan
+        </button>
+    </EditForm>
+   
+</div>
+
+@code {
+    private LoanRecord newLoan = new LoanRecord();
+    private List<Student> students = new List<Student>();
+    private List<Equipment> availableEquipment = new List<Equipment>();
+
+    private bool showSuccessMessage = false;
+    private string errorMessage = "";
+    private bool isUsingMockData = false;
+
+    protected override void OnInitialized()
+    {
+        isUsingMockData = SettingsManager.UseMockData("CreateLoan");
+        LoadData();
+    }
+
+    private void LoadData()
+    {
+        if (isUsingMockData)
+        {
+            students = MockManager.GetStudents();
+            availableEquipment = MockManager.GetAvailableEquipment();
+        }
+        else
+        {
+            students = DbManager.GetStudents();
+            availableEquipment = DbManager.GetAvailableEquipment();
+        }
+    }
+
+    private void HandleValidSubmit()
+    {
+        showSuccessMessage = false;
+        errorMessage = "";
+
+        // Defensive Programming
+        if (newLoan.StudentId == 0)
+        {
+            errorMessage = "Please select a student.";
+            return;
+        }
+
+        if (newLoan.EquipmentId == 0)
+        {
+            errorMessage = "Please select equipment.";
+            return;
+        }
+
+        if (newLoan.ExpectedReturn <= DateTime.Now)
+        {
+            errorMessage = "Return date must be in the future.";
+            return;
+        }
+
+        try
+        {
+            newLoan.CheckoutDate = DateTime.Now;
+            newLoan.Status = "Active";
+
+            if (isUsingMockData)
+            {
+                MockManager.SaveLoan(newLoan);
+            }
+            else
+            {
+                DbManager.SaveLoan(newLoan);
+            }
+
+            showSuccessMessage = true;
+            newLoan = new LoanRecord(); // Reset form
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error creating loan: {ex.Message}";
+        }
+    }
+}

@@ -1,0 +1,196 @@
+﻿@page "/view-data"
+@using TechVault.UI.Models
+@using TechVault.UI.Data
+@inject DatabaseManager DbManager
+@inject MockDataManager MockManager
+
+<PageTitle>View Data</PageTitle>
+
+<div style="max-width: 1000px; margin: 2rem auto; font-family: sans-serif; background: #ffffff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+        <div>
+            <a href="/" style="text-decoration: none; color: #17a2b8; font-weight: bold;">&larr; Back to Dashboard</a>
+            <h2 style="margin-top: 1rem; color: #343a40; margin-bottom: 0;">System Data</h2>
+            <p style="color: #6c757d; margin-top: 0.5rem; margin-bottom: 0;">Review registered users and equipment records.</p>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs mb-4" style="border-bottom: 2px solid #dee2e6;">
+        <li class="nav-item">
+            <button class="nav-link @(currentView == "Loans" ? "active fw-bold text-primary" : "text-secondary")"
+                    style="cursor: pointer; border: none; background: transparent; padding: 10px 20px; font-size: 1.1rem; border-bottom: @(currentView == "Loans" ? "3px solid #007bff" : "3px solid transparent");"
+                    @onclick='() => SetView("Loans")'>
+                Equipment Loans
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link @(currentView == "Students" ? "active fw-bold text-primary" : "text-secondary")"
+                    style="cursor: pointer; border: none; background: transparent; padding: 10px 20px; font-size: 1.1rem; border-bottom: @(currentView == "Students" ? "3px solid #007bff" : "3px solid transparent");"
+                    @onclick='() => SetView("Students")'>
+                Registered Students
+            </button>
+        </li>
+    </ul> 
+
+    <!-- CONTENT: LOANS VIEW -->
+    @if (currentView == "Loans")
+    {
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; border: 1px solid #e9ecef; display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="form-check form-switch" style="margin: 0;">
+                <input class="form-check-input" type="checkbox" id="activeOnlySwitch" @bind="showActiveOnly" style="cursor: pointer;" />
+                <label class="form-check-label" for="activeOnlySwitch" style="font-weight: bold; color: #495057; cursor: pointer;">Active Loans Only</label>
+            </div>
+            <button class="btn btn-sm btn-info text-white" @onclick="LoadData" style="font-weight: bold;">Apply Filter</button>
+        </div>
+
+        @if (loans == null)
+        {
+            <div style="text-align: center; padding: 3rem; color: #6c757d;">
+                <div class="spinner-border text-info" role="status"></div>
+                <p class="mt-2">Loading loans...</p>
+            </div>
+        }
+        else if (loans.Count == 0)
+        {
+            <div style="text-align: center; padding: 3rem; background: #f8f9fa; border-radius: 8px; color: #6c757d;">
+                <p style="font-size: 1.2rem; margin: 0;">No loans found matching your criteria.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive" style="border-radius: 8px; overflow: hidden; border: 1px solid #dee2e6;">
+                <table class="table table-hover table-striped mb-0" style="background: white;">
+                    <thead style="background-color: #343a40; color: white;">
+                        <tr>
+                            <th style="padding: 1rem;">ID</th>
+                            <th style="padding: 1rem;">Student</th>
+                            <th style="padding: 1rem;">Equipment</th>
+                            <th style="padding: 1rem;">Checkout Date</th>
+                            <th style="padding: 1rem;">Expected Return</th>
+                            <th style="padding: 1rem;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var loan in loans)
+                        {
+                            <tr>
+                                <td style="padding: 1rem; font-weight: bold; color: #6c757d;">#@loan.LoanId</td>
+                                <td style="padding: 1rem;">@loan.StudentName</td>
+                                <td style="padding: 1rem;">@loan.EquipmentDetails</td>
+                                <td style="padding: 1rem;">@loan.CheckoutDate.ToString("dd MMM yyyy")</td>
+                                <td style="padding: 1rem;">@loan.ExpectedReturn.ToString("dd MMM yyyy")</td>
+                                <td style="padding: 1rem;">
+                                    @if (loan.Status == "Active" && loan.ExpectedReturn < DateTime.Now)
+                                    {
+                                        <span class="badge bg-danger" style="padding: 0.5em 0.8em;">Overdue</span>
+                                    }
+                                    else if (loan.Status == "Active")
+                                    {
+                                        <span class="badge bg-success" style="padding: 0.5em 0.8em;">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary" style="padding: 0.5em 0.8em;">@loan.Status</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+
+    <!-- CONTENT: STUDENTS VIEW -->
+    @if (currentView == "Students")
+    {
+        @if (students == null)
+        {
+            <div style="text-align: center; padding: 3rem; color: #6c757d;">
+                <div class="spinner-border text-info" role="status"></div>
+                <p class="mt-2">Loading students...</p>
+            </div>
+        }
+        else if (students.Count == 0)
+        {
+            <div style="text-align: center; padding: 3rem; background: #f8f9fa; border-radius: 8px; color: #6c757d;">
+                <p style="font-size: 1.2rem; margin: 0;">No students registered in the system yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive" style="border-radius: 8px; overflow: hidden; border: 1px solid #dee2e6;">
+                <table class="table table-hover table-striped mb-0" style="background: white;">
+                    <thead style="background-color: #343a40; color: white;">
+                        <tr>
+                            <th style="padding: 1rem;">Student ID</th>
+                            <th style="padding: 1rem;">First Name</th>
+                            <th style="padding: 1rem;">Last Name</th>
+                            <th style="padding: 1rem;">College Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var student in students)
+                        {
+                            <tr>
+                                <td style="padding: 1rem; font-weight: bold; color: #6c757d;">#@student.StudentId</td>
+                                <td style="padding: 1rem;">@student.FirstName</td>
+                                <td style="padding: 1rem;">@student.LastName</td>
+                                <td style="padding: 1rem;"><a href="mailto:@student.CollegeEmail" style="color: #007bff; text-decoration: none;">@student.CollegeEmail</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private string currentView = "Loans"; // Default tab
+    private List<LoanRecord> loans;
+    private List<Student> students;
+    private bool showActiveOnly = false;
+    private bool isUsingMockData = false;
+
+    protected override void OnInitialized()
+    {
+        // Notice we are now checking the "ViewData" key
+        isUsingMockData = SettingsManager.UseMockData("ViewData");
+        LoadData();
+    }
+
+    private void SetView(string viewName)
+    {
+        currentView = viewName;
+        LoadData();
+    }
+
+    private void LoadData()
+    {
+        if (currentView == "Loans")
+        {
+            if (isUsingMockData)
+            {
+                loans = MockManager.GetAllLoans(showActiveOnly);
+            }
+            else
+            {
+                loans = DbManager.GetAllLoans(showActiveOnly);
+            }
+        }
+        else if (currentView == "Students")
+        {
+            if (isUsingMockData)
+            {
+                students = MockManager.GetStudents();
+            }
+            else
+            {
+                students = DbManager.GetStudents();
+            }
+        }
+    }
+}

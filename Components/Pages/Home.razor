@@ -2,34 +2,49 @@
 
 <PageTitle>TechVault - Dashboard</PageTitle>
 
-<div style="max-width: 800px; margin: 4rem auto; font-family: sans-serif; text-align: center;">
+<!-- Header Section -->
+<div style="margin-bottom: 3rem; text-align: center;">
+    <h1 style="font-size: 3rem; color: #343a40; margin-bottom: 0.5rem;">TechVault</h1>
+    <p style="font-size: 1.2rem; color: #6c757d;">Equipment Management & User Administration Portal</p>
+</div>
 
-    <!-- Header Section -->
-    <div style="margin-bottom: 3rem;">
-        <h1 style="font-size: 3rem; color: #343a40; margin-bottom: 0.5rem;">TechVault</h1>
-        <p style="font-size: 1.2rem; color: #6c757d;">Equipment Management & User Administration Portal</p>
+<!-- Action Cards -->
+<div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+
+    <!-- Register Student Card -->
+    <div style="flex: 1; min-width: 250px; padding: 2rem; background: white; border: 2px solid #28a745; border-radius: 12px; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(40,167,69,0.15); text-align: center;">
+        <h2 style="color: #28a745; margin-bottom: 1rem;">Students</h2>
+        <p style="color: #6c757d; margin-bottom: 2rem;">Register new students into the system with validation.</p>
+        <a href="/register-student" style="display: inline-block; padding: 12px 24px; background-color: #28a745; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+            Add Student
+        </a>
     </div>
 
-    <!-- Action Cards -->
-    <div style="display: flex; gap: 2rem; justify-content: center;">
-
-        <!-- User Profile Card -->
-        <div style="flex: 1; padding: 2rem; background: white; border: 2px solid #e9ecef; border-radius: 12px; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <h2 style="color: #495057; margin-bottom: 1rem;">User Profiles</h2>
-            <p style="color: #6c757d; margin-bottom: 2rem;">Explore profile creation, email validation patterns, and structured data binding.</p>
-            <a href="/demo" style="display: inline-block; padding: 12px 24px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
-                Manage Users
-            </a>
-        </div>
-
-        <!-- Equipment Loan Card -->
-        <div style="flex: 1; padding: 2rem; background: white; border: 2px solid #007bff; border-radius: 12px; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(0,123,255,0.15);">
-            <h2 style="color: #007bff; margin-bottom: 1rem;">Equipment Loans</h2>
-            <p style="color: #6c757d; margin-bottom: 2rem;">Access the practical workspace to implement UI constraints, drop-downs, and error handling.</p>
-            <a href="/exerciseaddloan" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
-                Open Loan System
-            </a>
-        </div>
-
+    <!-- Equipment Loan Card -->
+    <div style="flex: 1; min-width: 250px; padding: 2rem; background: white; border: 2px solid #007bff; border-radius: 12px; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(0,123,255,0.15); text-align: center;">
+        <h2 style="color: #007bff; margin-bottom: 1rem;">Create Loan</h2>
+        <p style="color: #6c757d; margin-bottom: 2rem;">Issue equipment to students using relational drop-downs.</p>
+        <a href="/exercise" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+            New Loan
+        </a>
     </div>
+
+    <!-- View Data Card -->
+    <div style="flex: 1; min-width: 250px; padding: 2rem; background: white; border: 2px solid #17a2b8; border-radius: 12px; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(23,162,184,0.15); text-align: center;">
+        <h2 style="color: #17a2b8; margin-bottom: 1rem;">View Data</h2>
+        <p style="color: #6c757d; margin-bottom: 2rem;">Review system users and historical equipment loans.</p>
+        <a href="/view-data" style="display: inline-block; padding: 12px 24px; background-color: #17a2b8; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+            View Data
+        </a>
+    </div>
+
+    <!-- User Profile Card (Demo) -->
+    <div style="flex: 1; min-width: 250px; padding: 2rem; background: white; border: 2px solid #e9ecef; border-radius: 12px; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+        <h2 style="color: #495057; margin-bottom: 1rem;">User Demo</h2>
+        <p style="color: #6c757d; margin-bottom: 2rem;">Explore profile creation, validation, and data binding.</p>
+        <a href="/demo" style="display: inline-block; padding: 12px 24px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+            View Demo
+        </a>
+    </div>
+
 </div>

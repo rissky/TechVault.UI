@@ -17,7 +17,7 @@
     <!-- STUDENT TODO: Change this to a dropdown (<select>) to constrain user input -->
     <div style="margin-bottom: 1rem;">
         <label style="display:block; font-weight: bold;">Equipment Type:</label>
-        <input type="text" @bind="newLoan.EquipmentType" style="width: 100%; padding: 8px;" />
+        <input type="text" @bind="newLoan.EquipmentDetails" style="width: 100%; padding: 8px;" />
     </div>
     <!-- STUDENT TODO: is this the best input choice here -->
     <div style="margin-bottom: 1rem;">
@@ -33,7 +33,7 @@
     @if (showSuccess)
     {
         <div style="margin-top: 1rem; padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;">
-            Loan for @newLoan.EquipmentType recorded successfully!
+            Loan for @newLoan.EquipmentDetails recorded successfully!
         </div>
     }
 </div>
